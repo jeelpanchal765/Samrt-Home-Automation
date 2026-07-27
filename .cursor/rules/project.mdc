@@ -1,0 +1,30 @@
+---
+description: Domi smart home AC control project conventions
+alwaysApply: true
+---
+
+# Domi — Smart Home AC Control
+
+## Stack
+- **Frontend**: React 18 + Vite in `frontend/` (port 5173)
+- **Backend**: Python Flask in `backend/` (port 5000)
+
+## Architecture
+- The React UI calls Flask REST endpoints under `/api/*`.
+- Backend state is in-memory today; real Daikin hardware integration belongs only in the backend (drivers layer), not the frontend.
+- Keep API contracts stable so the UI does not need changes when hardware is added.
+
+## Conventions
+- Python: 4-space indent, Flask route handlers in `backend/app.py`
+- React: 2-space indent, components in `frontend/src/`
+- Do not add heavy frameworks unless asked; this is a lean Vite + React setup.
+- Prefer minimal, focused changes. Match existing file style.
+
+## Run locally
+```bash
+# Terminal 1
+cd backend && pip install -r requirements.txt && python app.py
+
+# Terminal 2
+cd frontend && npm install && npm run dev
+```
