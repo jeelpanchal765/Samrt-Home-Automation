@@ -1,55 +1,96 @@
-# Domi — AC Control (React + Python)
+# Domi — Mobile-First Smart Home PWA & Remote Control
 
-A control dashboard for your Daikin AC, styled like the original demo but now
-split into a real frontend/backend so it's ready to be wired to actual hardware.
+A modern, mobile-first Progressive Web App (PWA) and backend architecture to control your AC, Smart TV, Security Cameras, and IoT devices from your Android phone or any browser anywhere in the world.
 
-- **Frontend**: React + Vite (`frontend/`)
-- **Backend**: Python + Flask (`backend/`)
+---
 
-Right now the backend just holds state in memory — it does **not** control a
-real AC yet. It's the layer you'll swap out once you get hardware (see below).
+## 🚀 Key Features
 
-## Run it
+### 1. 📱 Installable Mobile PWA
+- **Install on Android Phone**: Open in Google Chrome and tap **"Add to Home screen"** / **"Install"** to use as a native standalone app.
+- **Offline App Shell & Service Worker**: Instant loading via `sw.js` and custom app icon suite (`manifest.json`).
+- **Tactile Mobile UX**: Safe-area padding, bottom navigation, touch vibrations (haptic feedback), and responsive cards.
 
-**1. Start the backend**
+### 2. ❄️ Real AC Remote System
+- Dedicated thermostat modal with **circular temperature dial** (16°C – 30°C).
+- Operating modes: **Cool (❄️), Heat (☀️), Dry (💧), Fan (🌀), Auto (⚡)**.
+- Fan speed (Auto, Low, Med, High, Turbo) & Louver Swing modes (Fixed, Vertical, Horizontal, 3D).
+- Live ambient room temperature and humidity readouts.
+- **Hardware Drivers**:
+  - `DaikinHttpDriver`: Direct local HTTP LAN control for Daikin WiFi adapters (BRP069 series).
+  - `MqttClimateDriver`: MQTT protocol integration for ESP32 IR Blasters and Tasmota.
+  - `TuyaCloudDriver`: Cloud API integration.
+  - `SimulatorDriver`: Virtual testing mode.
+
+### 3. 📺 Tactile TV Remote Control
+- Physical-feel remote control layout with **Tactile D-Pad** (Up, Down, Left, Right, OK).
+- **Volume Rocker (+/-)** with Mute toggle.
+- **Channel Rocker (+/-)** with numeric keypad popup.
+- Navigation keys: **Back, Home, Menu**.
+- Media keys: **Play/Pause, Rewind, Fast-Forward**.
+- **Input Source Switcher**: HDMI 1, HDMI 2, HDMI 3, Netflix, YouTube, Prime Video, Live TV.
+- **Virtual Smart TV Keyboard**: Type text and search queries directly into TV search bars from your phone.
+- **Hardware Drivers**: LG webOS SSAP WebSocket, Samsung Tizen WS, Android TV ADB/Remote, MQTT IR emitter.
+
+### 4. 📹 Secure Camera Security System
+- Multi-camera live security monitoring grid.
+- **Server-Side Security**: Camera passwords, IP addresses, and RTSP URLs are strictly kept on the server and never exposed to client JavaScript.
+- Live stream proxy (`/api/cameras/<id>/stream`) & instantaneous snapshot capture.
+- Full-screen interactive viewer, Night Vision IR toggle, and Recording status indicators.
+
+### 5. ⚡ Automations Engine
+- Custom condition and scheduled trigger engine ("IF condition THEN action").
+- Time-based triggers (e.g. *Turn AC ON at 7:00 PM*, *Turn TV OFF at midnight*).
+- Sensor threshold triggers (e.g. *Turn AC ON when room temp reaches 25°C*).
+
+### 6. 🌐 Remote Access & Home Gateway Architecture
+- **Control from anywhere**: Use your phone on 4G/5G mobile data outside the home.
+- **Local Home Gateway Bridge** (`backend/gateway/home_gateway.py`): Run on a Raspberry Pi or local PC inside your home network to bridge LAN-only devices (Daikin local WiFi, LG TV, RTSP cams) to the cloud without complex router port-forwarding.
+
+---
+
+## 🛠️ Getting Started
+
+### 1. Start the Backend API
 ```bash
 cd backend
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 python app.py
 ```
-Runs on http://localhost:5000
+*Backend runs on `http://localhost:5000` with REST endpoints, SSE real-time stream (`/api/events`), and camera proxies.*
 
-**2. Start the frontend** (in a new terminal)
+### 2. Start the Frontend PWA
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Runs on http://localhost:5173
+*Frontend runs on `http://localhost:5173`.*
 
-Open http://localhost:5173 in your browser — it talks to the Flask API automatically.
+---
 
-## API reference (backend/app.py)
+## 📱 How to Install on Your Android Phone
 
-| Method | Route | Body | Description |
-|---|---|---|---|
-| GET | `/api/state` | — | Returns current state |
-| POST | `/api/power` | — | Toggles on/off |
-| POST | `/api/temp` | `{ "delta": 1 }` | Adjusts temp by ±1°C |
-| POST | `/api/mode` | `{ "mode": "cool" }` | cool / heat / dry / fan |
-| POST | `/api/fan` | `{ "value": 0 }` | 0 = auto, 1–3 = speed |
-| POST | `/api/swing` | — | Toggles swing |
+1. Ensure your phone and computer are on the same Wi-Fi (or open your deployed Vercel URL on your phone).
+2. Open **Google Chrome** on Android and navigate to the app URL.
+3. Tap the **"Install Domi Remote"** banner at the top, or tap Chrome menu (`⋮`) -> **"Add to Home screen"** / **"Install App"**.
+4. Domi Home is now installed as a full-screen standalone application on your phone!
 
-## Making this control your real Daikin AC
+---
 
-The backend is the only place that needs to change — the React UI won't
-need to change at all. Pick one:
+## ☁️ Deploying to Vercel
 
-1. **Daikin WiFi adapter (BRP series)** — if your unit supports it, plug it
-   in and call Daikin's cloud API from inside the Flask route handlers
-   instead of just mutating the `state` dict.
-2. **IR blaster (ESP32/Arduino + IR LED)** — capture your remote's IR codes,
-   flash them to the ESP32, then have Flask send an HTTP/MQTT command to the
-   ESP32 whenever a route is hit.
-3. **Smart controller (Sensibo, Broadlink RM4, Cielo Breez)** — these expose
-   their own APIs; call them from the Flask routes the same way.
+1. Push your repository to GitHub.
+2. In the [Vercel Dashboard](https://vercel.com), click **"Add New Project"** and import this repository.
+3. Configure the **Root Directory** to `frontend/`.
+4. Add environment variables:
+   - `VITE_API_BASE_URL`: URL of your deployed Python backend (e.g. on Render / Railway / Fly.io / VPS).
+   - `VITE_GOOGLE_CLIENT_ID`: Your Google OAuth Web Client ID (optional, Demo Mode is available out-of-the-box).
+5. Click **Deploy**!
+
+---
+
+## 🔒 Security Architecture
+- **JWT Authentication & OAuth**: Every API request is verified with signed JWT tokens.
+- **Multi-Tenant Isolation**: Devices and automations are tied strictly to each authenticated user's ID.
+- **Credential Protection**: Hardware passwords, RTSP tokens, and MQTT secrets are never leaked to frontend clients.

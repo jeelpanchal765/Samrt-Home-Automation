@@ -1,0 +1,49 @@
+{
+  "short_name": "Domi Home",
+  "name": "Domi Smart Home Remote & Control",
+  "description": "Mobile-first Smart Home Remote for AC, TV, Cameras and IoT devices from anywhere.",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "categories": ["lifestyle", "utilities", "smart home"],
+  "shortcuts": [
+    {
+      "name": "AC Control",
+      "url": "/?tab=remotes&device=ac",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "TV Remote",
+      "url": "/?tab=remotes&device=tv",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Security Cameras",
+      "url": "/?tab=cameras",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    }
+  ]
+}

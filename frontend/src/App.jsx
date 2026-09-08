@@ -6,17 +6,23 @@ import LoginPage from './components/LoginPage'
 import './App.css'
 
 function AppContent() {
-  const { user, loading, login } = useAuth()
+  const { user, loading, login, loginWithDemo } = useAuth()
   const [error, setError] = useState(null)
 
   if (loading) {
-    return <div className="app-shell"><p className="loading">Loading…</p></div>
+    return (
+      <div className="app-loading-screen">
+        <img src="/icons/icon-192.svg" alt="Domi" className="splash-logo" />
+        <p className="loading-text">Connecting to Domi Home...</p>
+      </div>
+    )
   }
 
   if (!user) {
     return (
       <LoginPage
         onLogin={login}
+        onDemoLogin={loginWithDemo}
         error={error}
         setError={setError}
       />
